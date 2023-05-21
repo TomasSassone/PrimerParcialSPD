@@ -1,0 +1,343 @@
+/*
+Parcial Práctico
+Tomás Santiago Sassone
+1°D
+DNI: 44937597 - Legajo: 114563
+
+Se nos pide armar un modelo de montacarga funcional como 
+maqueta para un hospital. El objetivo es que implementes
+un sistema que pueda recibir ordenes de subir, bajar o
+pausar desde diferentes pisos y muestre el estado actual
+del montacargas en el display 7 segmentos.
+*/
+
+//botones
+#define BOTONUP 4
+#define BOTONDOWN 3
+#define BOTONSTOP 2
+
+//leds
+#define LEDON 6
+#define LEDPAUSE 5
+
+//display 7 segmentos
+#define LED_G 13
+#define LED_F 12
+#define LED_A 11
+#define LED_B 10
+#define LED_C A3
+#define LED_D A2
+#define LED_E A1
+
+//funcion pausa
+int TIEMPO_ESPERA_PAUSA = 500;     		// Tiempo de espera en milisegundos
+int contadorPulsacionesBoton = 0; 		// contador pulsaciones del boton de pausa
+int ultimoEstadoBoton = 0;         		// estado previo del boton de pausa
+
+//funcion subir ascensor
+int contadorPulsacionesBotonArriba = 0; // contador pulsaciones del boton para subir
+int ultimoEstadoBotonArriba = 0;		// estado previo del boton para subir
+
+//funcion
+int contadorPulsacionesBotonAbajo = 0;  // contador pulsaciones del boton para bajar
+int ultimoEstadoBotonAbajo = 0;			// estado previo del boton para bajar
+
+int pisoActual = 0;						// piso actual que se muestra en el display
+bool pausa = false;						// estado de pausa
+  
+void setup()
+{
+  //botones
+  pinMode(BOTONUP, INPUT);
+  pinMode(BOTONDOWN, INPUT);
+  pinMode(BOTONSTOP, INPUT);
+  //leds
+  pinMode(LEDON, OUTPUT);
+  pinMode(LEDPAUSE, OUTPUT);
+  //leds del display 7 segmentos
+  pinMode(LED_G, OUTPUT);
+  pinMode(LED_F, OUTPUT);
+  pinMode(LED_A, OUTPUT);
+  pinMode(LED_B, OUTPUT);
+  pinMode(LED_C, OUTPUT);
+  pinMode(LED_D, OUTPUT);
+  pinMode(LED_E, OUTPUT);
+  //serial
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  montacargas(); //inicia las funciones necesarias para el funcionamiento del montacargas
+}
+
+//////////////////// FUNCIONES /////////////////////////////
+
+void montacargas()
+{
+  botonPausa();
+  BotonArriba();
+  BotonAbajo();
+}
+
+////////////////////////////////////////////////////////////
+
+void moverseEntrePisos(String direccion)
+{
+  /*
+  recibe un parametro de direccion (si sube o baja el montacargas) y, utilizando
+  las funciones de botonPausa y moverPisoAscensor, hace que el montacargas se mueva,
+  mostrando cada piso en el display 7 segmentos. Si se presiona el boton de pausa,
+  el montacargas se detendrá en el piso por el que esté pasando.
+  */
+  if (direccion == "arriba")
+  {
+    for (int i = pisoActual; i>=0 && i<=9; i++)
+    {
+      botonPausa();
+      if (pausa)
+      {
+        break;
+        Serial.println("Detenido");
+        moverPisoMontacargas(pisoActual);
+      }
+      else
+      {
+        Serial.println("Subiendo...");
+        moverPisoMontacargas(10);
+        moverPisoMontacargas(i);
+        delay(3000);
+        pisoActual = i;   
+      }
+    }
+  }
+  if (direccion == "abajo")
+  {
+    for (int i = pisoActual; i>=0 && i<=9; i--)
+    {
+      botonPausa();
+      if (pausa)
+      {
+        break;
+        Serial.println("Detenido");
+        moverPisoMontacargas(pisoActual);
+      }
+      else
+      {
+        Serial.println("Bajando...");
+        moverPisoMontacargas(10);
+        moverPisoMontacargas(i);
+        delay(3000);
+        pisoActual = i;
+      }
+    }
+  }
+}
+
+
+////////////////////////////////////////////////////////////
+
+void botonPausa()
+{
+  /*
+  Lee el estado del boton de pausa, utiliza la funcion millis para leer cuanto tiempo
+  pasa desde que se inicio el arduino o desde que se presiono el boton por ultima vez.
+  Mientras el boton de pausa está presionado, empieza a contar el tiempo con millis, y
+  si el boton fue presionado durante el tiempo necesario (establecido anteriormente),
+  se activará el estado de pausa y el ascensor se detendrá.
+  */
+  int estadoBoton = digitalRead(BOTONSTOP);
+
+  if (estadoBoton != ultimoEstadoBoton) {
+    if (estadoBoton == HIGH) {
+      if (!pausa) {
+        // Si la pausa no está activada, se registra el momento actual
+        int tiempoInicio = millis();
+
+        // Espera mientras se mantiene el botón presionado
+        while (digitalRead(BOTONSTOP) == HIGH) {
+          // Verificar si se ha superado el tiempo de espera
+          if (millis() - tiempoInicio >= TIEMPO_ESPERA_PAUSA) {
+            // Activar la pausa
+            pausa = true;
+            Serial.println("Montacargas detenido");
+            digitalWrite(LEDON, LOW);
+            digitalWrite(LEDPAUSE, HIGH);
+            moverPisoMontacargas(pisoActual);
+            break;
+          }
+        }
+      } else {
+        // Si la pausa está activada y se presiona el botón nuevamente, se desactiva la pausa
+        pausa = false;
+        digitalWrite(LEDPAUSE, LOW);
+      }
+    }
+    delay(150);
+  }
+  ultimoEstadoBoton = estadoBoton;
+}
+
+////////////////////////////////////////////////////////////
+
+void BotonArriba()
+{
+  /*
+  Lee el estado del boton de subida, comprueba su ultimo estado y si es diferente al
+  nuevo estado, se actualizará. Si el estado es high (presionado), se llamará a la
+  funcion moverseEntrePisos con la direccion "arriba", para empezar a subir.
+  */
+  int EstadoBotonArriba = digitalRead(BOTONUP);
+
+  // Verificar si el estado del botón de inicio ha cambiado
+  if (EstadoBotonArriba != ultimoEstadoBotonArriba)
+  {
+    ultimoEstadoBotonArriba = EstadoBotonArriba;
+
+    // Verificar si el botón de inicio está en estado alto
+    if (ultimoEstadoBotonArriba == HIGH)
+    {
+      // Llamada a la función para que el montacargas suba
+      digitalWrite(LEDON, HIGH);
+      moverseEntrePisos("arriba");
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////
+
+void BotonAbajo()
+{
+  /*
+  Lee el estado del boton de bajada, comprueba su ultimo estado y, si es
+  diferente al nuevo estado, se actualizará. Si el estado es high (presionado),
+  se llamará a la funcion moverseEntrePisos con la direccion "abajo",
+  para empezar a bajar.
+  */
+  int EstadoBotonAbajo = digitalRead(BOTONDOWN);
+
+  // Verificar si el estado del botón de inicio ha cambiado
+  if (EstadoBotonAbajo != ultimoEstadoBotonAbajo)
+  {
+    ultimoEstadoBotonAbajo = EstadoBotonAbajo;
+
+    // Verificar si el botón de inicio está en estado alto
+    if (ultimoEstadoBotonAbajo == HIGH)
+    {
+      // Llamada a la función para que el montacargas suba
+      digitalWrite(LEDON, HIGH);
+      moverseEntrePisos("abajo");
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////
+
+void moverPisoMontacargas (int piso)
+{
+  /*
+  Recibe un número (que hace referencia al piso al que se quiere cambiar el display)
+  y enciende los LEDs correspondientes en el display para mostrar el numero recibido.
+  */
+ switch(piso)
+ {
+   case 9:
+   Serial.println("Piso 9");
+   digitalWrite(LED_G, HIGH);
+   digitalWrite(LED_F, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_C, HIGH);
+   digitalWrite(LED_D, HIGH);
+   break;
+   //
+   case 8:
+   Serial.println("Piso 8");
+   digitalWrite(LED_G, HIGH);
+   digitalWrite(LED_F, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_C, HIGH);
+   digitalWrite(LED_D, HIGH);
+   digitalWrite(LED_E, HIGH);
+   break;
+   //
+   case 7:
+   Serial.println("Piso 7");
+   digitalWrite(LED_F, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_C, HIGH);
+   break;
+   //
+   case 6:
+   Serial.println("Piso 6");
+   digitalWrite(LED_G, HIGH);
+   digitalWrite(LED_F, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_C, HIGH);
+   digitalWrite(LED_D, HIGH);
+   digitalWrite(LED_E, HIGH);
+   break;
+   //
+   case 5:
+   Serial.println("Piso 5");
+   digitalWrite(LED_G, HIGH);
+   digitalWrite(LED_F, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_C, HIGH);
+   digitalWrite(LED_D, HIGH);
+   break;
+   //
+   case 4:
+   Serial.println("Piso 4");
+   digitalWrite(LED_G, HIGH);
+   digitalWrite(LED_F, HIGH);
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_C, HIGH);
+   break;
+   //
+   case 3:
+   Serial.println("Piso 3");
+   digitalWrite(LED_G, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_C, HIGH);
+   digitalWrite(LED_D, HIGH);
+   break;
+   //
+   case 2:
+   Serial.println("Piso 2");
+   digitalWrite(LED_G, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_D, HIGH);
+   digitalWrite(LED_E, HIGH);
+   break;
+   //
+   case 1:
+   Serial.println("Piso 1");
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_C, HIGH);
+   break;
+   //
+   case 0:
+   Serial.println("Planta baja");
+   digitalWrite(LED_F, HIGH);
+   digitalWrite(LED_A, HIGH);
+   digitalWrite(LED_B, HIGH);
+   digitalWrite(LED_C, HIGH);
+   digitalWrite(LED_D, HIGH);
+   digitalWrite(LED_E, HIGH);
+   break;
+   case 10:
+   digitalWrite(LED_G, LOW);
+   digitalWrite(LED_F, LOW);
+   digitalWrite(LED_A, LOW);
+   digitalWrite(LED_B, LOW);
+   digitalWrite(LED_C, LOW);
+   digitalWrite(LED_D, LOW);
+   digitalWrite(LED_E, LOW);
+   
+ }
+}
