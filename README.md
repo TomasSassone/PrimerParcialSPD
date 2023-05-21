@@ -46,6 +46,15 @@ diferentes pisos y muestre el estado actual del montacargas en el display 7 segm
     • Deberán explicar el funcionamiento integral utilizando documentación
     MarkDown.
 
+
+## Diagrama esquemático del circuito
+
+![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/c3f1068f-7b8f-40b3-a8eb-edb57726ce5b)
+
+[Link](https://github.com/TomasSassone/PrimerParcialSPD/files/11525742/Parcial.Practico.Domiciliario.-.Sassone.-.1D.pdf)
+
+
+
 ## Link al proyecto 🤖
 [Tinkercad](https://www.tinkercad.com/things/l5eIEKKi1Ie-parcial-practico-domiciliario-sassone-1d/editel?sharecode=_uouFBoCo6iM1ceLNo71j3dTxgfvuHUST7mYmXrhIZw)
 
