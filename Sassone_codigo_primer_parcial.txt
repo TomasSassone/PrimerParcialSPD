@@ -30,20 +30,20 @@ del montacargas en el display 7 segmentos.
 #define LED_E A1
 
 //funcion pausa
-int TIEMPO_ESPERA_PAUSA = 500;     		// Tiempo de espera en milisegundos
-int contadorPulsacionesBoton = 0; 		// contador pulsaciones del boton de pausa
-int ultimoEstadoBoton = 0;         		// estado previo del boton de pausa
+int TIEMPO_ESPERA_PAUSA = 500;     		  // Tiempo de espera en milisegundos
+int contadorPulsacionesBoton = 0; 		  // contador pulsaciones del boton de pausa
+int ultimoEstadoBoton = 0;         		  // estado previo del boton de pausa
 
 //funcion subir ascensor
 int contadorPulsacionesBotonArriba = 0; // contador pulsaciones del boton para subir
-int ultimoEstadoBotonArriba = 0;		// estado previo del boton para subir
+int ultimoEstadoBotonArriba = 0;		    // estado previo del boton para subir
 
 //funcion
 int contadorPulsacionesBotonAbajo = 0;  // contador pulsaciones del boton para bajar
-int ultimoEstadoBotonAbajo = 0;			// estado previo del boton para bajar
+int ultimoEstadoBotonAbajo = 0;			    // estado previo del boton para bajar
 
-int pisoActual = 0;						// piso actual que se muestra en el display
-bool pausa = false;						// estado de pausa
+int pisoActual = 0;						          // piso actual que se muestra en el display
+bool pausa = false;						          // estado de pausa
   
 void setup()
 {
@@ -71,7 +71,7 @@ void loop()
   montacargas(); //inicia las funciones necesarias para el funcionamiento del montacargas
 }
 
-//////////////////// FUNCIONES /////////////////////////////
+//////////////////// FUNCIONES ////////////////////////////////////////////////////////
 
 void montacargas()
 {
@@ -80,7 +80,7 @@ void montacargas()
   BotonAbajo();
 }
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 void moverseEntrePisos(String direccion)
 {
@@ -135,7 +135,7 @@ void moverseEntrePisos(String direccion)
 }
 
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 void botonPausa()
 {
@@ -178,7 +178,7 @@ void botonPausa()
   ultimoEstadoBoton = estadoBoton;
 }
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 void BotonArriba()
 {
@@ -204,7 +204,7 @@ void BotonArriba()
   }
 }
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 void BotonAbajo()
 {
@@ -231,7 +231,7 @@ void BotonAbajo()
   }
 }
 
-////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 void moverPisoMontacargas (int piso)
 {
