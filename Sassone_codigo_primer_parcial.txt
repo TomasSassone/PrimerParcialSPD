@@ -29,22 +29,30 @@ del montacargas en el display 7 segmentos.
 #define LED_D A2
 #define LED_E A1
 
+//servo y led(funcion parcial)
+#include <Servo.h>
+#define SERVO 7
+#define LEDMOV 8
+Servo myServo;
+int distancia;
+
 //funcion pausa
 int TIEMPO_ESPERA_PAUSA = 500;     		// Tiempo de espera en milisegundos
 int contadorPulsacionesBoton = 0; 		// contador pulsaciones del boton de pausa
 int ultimoEstadoBoton = 0;         		// estado previo del boton de pausa
 
 //funcion subir ascensor
-int contadorPulsacionesBotonArriba = 0; 	// contador pulsaciones del boton para subir
+int contadorPulsacionesBotonArriba = 0; // contador pulsaciones del boton para subir
 int ultimoEstadoBotonArriba = 0;		// estado previo del boton para subir
 
 //funcion
-int contadorPulsacionesBotonAbajo = 0;  	// contador pulsaciones del boton para bajar
+int contadorPulsacionesBotonAbajo = 0;  // contador pulsaciones del boton para bajar
 int ultimoEstadoBotonAbajo = 0;			// estado previo del boton para bajar
 
-int pisoActual = 				// piso actual que se muestra en el display
-bool pausa = false;				// estado de pausa
-  
+int pisoActual = 0;						// piso actual que se muestra en el display
+bool pausa = false;						// estado de pausa
+
+
 void setup()
 {
   //botones
@@ -62,16 +70,40 @@ void setup()
   pinMode(LED_C, OUTPUT);
   pinMode(LED_D, OUTPUT);
   pinMode(LED_E, OUTPUT);
+  //servo y led
+  myServo.attach(7, 500, 2500);
+  pinMode(LEDMOV, OUTPUT);
   //serial
   Serial.begin(9600);
 }
 
 void loop()
 {
+  
   montacargas(); //inicia las funciones necesarias para el funcionamiento del montacargas
 }
 
 //////////////////// FUNCIONES /////////////////////////////
+
+void servo()
+{
+  /*
+  El servo va girando acercándose a 180° conforme el montacargas se va
+  acercando al piso más alto. El LED naranja indica si el
+  servo está en movimiento.
+  */
+  int grados = map(pisoActual, 0, 8, 0, 180);
+  myServo.write(grados);
+  if (grados > 1 && pausa == false && pisoActual < 9)
+  {
+    Serial.println("Servo en movimiento...");
+    digitalWrite(LEDMOV, HIGH);
+  } else {
+    digitalWrite(LEDMOV, LOW);
+  }
+}
+
+////////////////////////////////////////////////////////////
 
 void montacargas()
 {
@@ -147,7 +179,7 @@ void botonPausa()
   se activará el estado de pausa y el ascensor se detendrá.
   */
   int estadoBoton = digitalRead(BOTONSTOP);
-
+  servo();
   if (estadoBoton != ultimoEstadoBoton) {
     if (estadoBoton == HIGH) {
       if (!pausa) {
