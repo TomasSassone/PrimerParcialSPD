@@ -29,6 +29,12 @@ del montacargas en el display 7 segmentos.
 #define LED_D A2
 #define LED_E A1
 
+//sensor luz amb
+#define SENSOR A4
+
+//sensor inclinacion
+#define TILT 9
+
 //servo y led(funcion parcial)
 #include <Servo.h>
 #define SERVO 7
@@ -51,7 +57,8 @@ int ultimoEstadoBotonAbajo = 0;			// estado previo del boton para bajar
 
 int pisoActual = 0;						// piso actual que se muestra en el display
 bool pausa = false;						// estado de pausa
-
+int lecturaInclinacion;
+float sensorAmb;
 
 void setup()
 {
@@ -73,43 +80,80 @@ void setup()
   //servo y led
   myServo.attach(7, 500, 2500);
   pinMode(LEDMOV, OUTPUT);
+  // sensor de inclinacion
+  pinMode(TILT, INPUT);
+  // sensor de luz ambiental
+  pinMode(SENSOR, INPUT);
   //serial
   Serial.begin(9600);
 }
 
 void loop()
 {
-  
   montacargas(); //inicia las funciones necesarias para el funcionamiento del montacargas
 }
 
 //////////////////// FUNCIONES /////////////////////////////
 
+void sensorAmbiental()
+{
+  sensorAmb = analogRead(SENSOR);
+}
+
+////////////////////////////////////////////////////////////
+
+void tilt()
+{
+  /*
+  Detecta si el sensor está inclinado o no e imprime por el serial
+  en caso de que lo esté.
+  */
+  lecturaInclinacion = digitalRead(TILT);
+}
+
+////////////////////////////////////////////////////////////
+
 void servo()
 {
+  sensorAmbiental();
   /*
   El servo va girando acercándose a 180° conforme el montacargas se va
   acercando al piso más alto. El LED naranja indica si el
-  servo está en movimiento.
+  servo está en movimiento. Si el sensor de luz ambiental indica
+  que hay mucha luz en el ambiente, el LED apagará.
   */
   int grados = map(pisoActual, 0, 8, 0, 180);
-  myServo.write(grados);
-  if (grados > 1 && pausa == false && pisoActual < 9)
+  if (lecturaInclinacion = 1)
   {
-    Serial.println("Servo en movimiento...");
-    digitalWrite(LEDMOV, HIGH);
-  } else {
-    digitalWrite(LEDMOV, LOW);
+    myServo.write(grados);
+    if (grados > 1 && pausa == false && pisoActual < 9)
+    {
+      Serial.println("Servo en movimiento...");
+      if(sensorAmb < 512)
+      {
+        digitalWrite(LEDMOV, HIGH);
+      } else {
+        digitalWrite(LEDMOV, LOW);
+      }
+    }
   }
 }
 
 ////////////////////////////////////////////////////////////
 
 void montacargas()
-{
-  botonPausa();
-  BotonArriba();
-  BotonAbajo();
+{ 
+  /*
+  Inicia el montacargas. Si el montacargas está inclinado, no
+  iniciará.
+  */
+  tilt();
+  if(lecturaInclinacion != 1)
+  {
+    botonPausa();
+    BotonArriba();
+    BotonAbajo(); 
+  }
 }
 
 ////////////////////////////////////////////////////////////
