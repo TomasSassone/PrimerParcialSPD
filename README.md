@@ -50,11 +50,14 @@ diferentes pisos y muestre el estado actual del montacargas en el display 7 segm
 ## Nueva función - Corrector parcial
 Con la parte domiciliaria terminada , se deberá agregar funcionalidades con
 los siguientes elementos:
-Se debe **un servo** e imaginar la funcionalidad.
+Se debe agregar un **sensor de luz ambiental**, un **sensor de inclinación**, un **servo** e imaginar la funcionalidad.
 
 Decidí utilizar un servo y hacer que el mismo vaya rotando en función del piso en
 el que se encuentre el montacargas. Cuanto mayor más alto está el montacargas,
-más cerca estará el servo de los 180°.
+más cerca estará el servo de los 180°. El sensor de luz ambiental indica si el LED del
+servo debe encenderse o no (si hay poca luz ambiental se encenderá). Mientras que el sensor
+de inclinación determina si el montacargas puede iniciarse (Si el montacargas está inclinado,
+no iniciará).
 
 ![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/118e0bba-ebba-4480-8f56-ddaf2cf310cf)
 
@@ -62,16 +65,19 @@ más cerca estará el servo de los 180°.
 
 ## Diagrama esquemático del circuito
 
-![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/c3f1068f-7b8f-40b3-a8eb-edb57726ce5b)
+![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/1c690ede-01c7-4058-aac3-9518ad764c2e)
 
-[Link](https://github.com/TomasSassone/PrimerParcialSPD/files/11525742/Parcial.Practico.Domiciliario.-.Sassone.-.1D.pdf)
+![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/31147010-832b-4916-a159-34d1d38a8a35)
+
+
+[Link](https://github.com/TomasSassone/PrimerParcialSPD/files/11531508/Parcial.Practico.Domiciliario.-.Sassone.-.1D.1.pdf)
 
 
 
 ## Link al proyecto 🤖
 [Tinkercad](https://www.tinkercad.com/things/l5eIEKKi1Ie-parcial-practico-domiciliario-sassone-1d/editel?sharecode=_uouFBoCo6iM1ceLNo71j3dTxgfvuHUST7mYmXrhIZw)
 
-[GDB](https://onlinegdb.com/Ob8e-7EMYQ)
+[GDB](https://onlinegdb.com/4apqXeOWq)
 
 ## Fuentes 🔍
 [Botón - Cambio de estado](https://www.tinkercad.com/things/kAFApLyezbt)
