@@ -59,7 +59,8 @@ servo debe encenderse o no (si hay poca luz ambiental se encenderá). Mientras q
 de inclinación determina si el montacargas puede iniciarse (Si el montacargas está inclinado,
 no iniciará).
 
-![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/118e0bba-ebba-4480-8f56-ddaf2cf310cf)
+![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/5865b0bb-e2f4-46cd-a541-6cda6ce67cf8)
+
 
 
 
