@@ -45,6 +45,19 @@ diferentes pisos y muestre el estado actual del montacargas en el display 7 segm
     
     • Deberán explicar el funcionamiento integral utilizando documentación
     MarkDown.
+    
+
+## Nueva función - Corrector parcial
+Con la parte domiciliaria terminada , se deberá agregar funcionalidades con
+los siguientes elementos:
+Se debe **un servo** e imaginar la funcionalidad.
+
+Decidí utilizar un servo y hacer que el mismo vaya rotando en función del piso en
+el que se encuentre el montacargas. Cuanto mayor más alto está el montacargas,
+más cerca estará el servo de los 180°.
+
+![image](https://github.com/TomasSassone/PrimerParcialSPD/assets/72427373/118e0bba-ebba-4480-8f56-ddaf2cf310cf)
+
 
 
 ## Diagrama esquemático del circuito
@@ -58,7 +71,7 @@ diferentes pisos y muestre el estado actual del montacargas en el display 7 segm
 ## Link al proyecto 🤖
 [Tinkercad](https://www.tinkercad.com/things/l5eIEKKi1Ie-parcial-practico-domiciliario-sassone-1d/editel?sharecode=_uouFBoCo6iM1ceLNo71j3dTxgfvuHUST7mYmXrhIZw)
 
-[GDB](https://onlinegdb.com/DrB7acPiJ)
+[GDB](https://onlinegdb.com/Ob8e-7EMYQ)
 
 ## Fuentes 🔍
 [Botón - Cambio de estado](https://www.tinkercad.com/things/kAFApLyezbt)
